@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro de Jogadores</title>
+  <style>
+    /* Estilos CSS */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f1f5f8;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+    input[type="text"], select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    input[type="submit"], .download-btn {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #jogadores {
+      margin-top: 20px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    #jogadores p {
+      margin-bottom: 10px;
+    }
+    .csv-container {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .csv-text {
+      margin-right: 10px;
+    }
+    .form-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .form-row label {
+      flex-basis: 30%;
+    }
+    .form-row input[type="text"],
+    .form-row select {
+      flex-basis: 70%;
+    }
+    .form-row:last-child {
+      justify-content: flex-end;
+    }
+    .form-row:last-child input[type="submit"] {
+      flex-basis: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Cadastro de Jogadores</h1>
+
+  <div class="container">
+    <form id="cadastroForm">
+      <h2>Cadastrar Jogador</h2>
+
+      <div class="form-row">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" required>
+      </div>
+
+      <div class="form-row">
+        <label for="idade">Idade:</label>
+        <input type="text" id="idade" name="idade" required>
+      </div>
+
+      <div class="form-row">
+        <label for="time">Time:</label>
+        <input type="text" id="time" name="time" required>
+      </div>
+
+      <div class="form-row">
+        <label for="posicao">Posição:</label>
+        <select id="posicao" name="posicao" required>
+          <option value="">Selecione uma posição</option>
+          <option value="goleiro">Goleiro</option>
+          <option value="defensor">Defensor</option>
+          <option value="meio-campista">Meio-campista</option>
+          <option value="atacante">Atacante</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <input type="submit" value="Cadastrar">
+      </div>
+    </form>
+
+    <h2>Jogadores cadastrados</h2>
+    <div id="jogadores"></div>
+
+    <div class="csv-container">
+      <span class="csv-text">Exportar dados para CSV:</span>
+      <button class="download-btn" id="downloadBtn">Baixar CSV</button>
+    </div>
+  </div>
+
+  <script>
+    // JavaScript
+    var jogadores = [];
+
+    document.getElementById('cadastroForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Impede o envio do formulário
+
+      // Obtém os valores dos campos
+      var nome = document.getElementById('nome').value;
+      var idade = document.getElementById('idade').value;
+      var time = document.getElementById('time').value;
+      var posicao = document.getElementById('posicao').value;
+
+      // Adiciona os dados do jogador ao array
+      jogadores.push({
+        nome: nome,
+        idade: idade,
+        time: time,
+        posicao: posicao
+      });
+
+      // Cria um novo elemento para exibir os dados do jogador
+      var jogadorElement = document.createElement('p');
+      jogadorElement.innerHTML = 'Nome: ' + nome + ', Idade: ' + idade + ', Time: ' + time + ', Posição: ' + posicao;
+
+      // Obtém a div dos jogadores e adiciona o novo jogador
+      var jogadoresDiv = document.getElementById('jogadores');
+      jogadoresDiv.appendChild(jogadorElement);
+
+      // Limpa os campos do formulário
+      document.getElementById('nome').value = '';
+      document.getElementById('idade').value = '';
+      document.getElementById('time').value = '';
+      document.getElementById('posicao').value = '';
+
+      // Mostra a seção dos jogadores cadastrados
+      jogadoresDiv.style.display = 'block';
+    });
+
+    // Função para baixar os dados em CSV
+    function downloadCSV() {
+      var csvContent = "data:text/csv;charset=utf-8,";
+
+      // Cria o cabeçalho do CSV
+      csvContent += "Nome,Idade,Time,Posição\n";
+
+      // Adiciona os dados dos jogadores ao CSV
+      jogadores.forEach(function(jogador) {
+        csvContent += jogador.nome + "," + jogador.idade + "," + jogador.time + "," + jogador.posicao + "\n";
+      });
+
+      // Cria um link para download do arquivo CSV
+      var encodedURI = encodeURI(csvContent);
+      var link = document.createElement("a");
+      link.setAttribute("href", encodedURI);
+      link.setAttribute("download", "jogadores.csv");
+      document.body.appendChild(link);
+
+      // Simula o clique no link de download
+      link.click();
+
+      // Remove o link da página
+      document.body.removeChild(link);
+    }
+
+    // Adiciona o evento de clique ao botão de download
+    document.getElementById('downloadBtn').addEventListener('click', downloadCSV);
+  </script>
+</body>
+</html>
